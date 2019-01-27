@@ -1,0 +1,27 @@
+{
+  "name": "dropbox_clone_javascript",
+  "version": "1.0.0",
+  "description": "[![Hcode Treinamentos](https://www.hcode.com.br/res/img/hcode-200x100.png)](https://www.hcode.com.br)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/paulowebphp/dropbox_clone_javascript.git"
+  },
+  "author": "paulowebphp",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/paulowebphp/dropbox_clone_javascript/issues"
+  },
+  "homepage": "https://github.com/paulowebphp/dropbox_clone_javascript#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "consign": "^0.1.6",
+    "express": "^4.16.4",
+    "express-validator": "^5.3.1",
+    "nedb": "^1.8.0",
+    "restify-clients": "^2.6.4"
+  }
+}
