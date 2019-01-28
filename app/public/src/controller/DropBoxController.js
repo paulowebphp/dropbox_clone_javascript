@@ -32,7 +32,7 @@ class DropBoxController
         this.inputFilesEl.addEventListener('change', event =>
         {
 
-            console.log(event.target.files);
+            this.uploadTask(event.target.files);
 
             this.snackModalEl.style.display = 'block';
 
@@ -41,6 +41,61 @@ class DropBoxController
 
     }//END initEvents
 
+
+
+
+
+
+    uploadTask( files )
+    {
+
+        let promises = [];
+
+        [...files].forEach( file =>
+        {
+
+            promises.push(new Promise( (resolve,reject) =>
+            {
+
+                let ajax = new XMLHttpRequest();
+
+                ajax.open('POST', '/upload');
+
+                ajax.onload = event =>
+                {
+                    try
+                    {
+                        resolve(JSON.parse(ajax.responseText));
+                        
+                    }//end try
+                    catch(e)
+                    {
+                        reject(e);
+                        
+                    }//end catch
+
+                };//end ajax.onload
+
+                ajax.onerror = event =>
+                {
+                    reject(event);
+
+                };//end ajax.onerror
+
+                let formData = new FormData();
+
+                formData.append('input-file',file);
+
+                ajax.send(formData);
+
+            }));//end promises.push
+
+        });//end forEach
+
+        /** método all() recebe um Array de Promises */
+        return Promise.all(promises);//end Promise.all()
+
+    }//END uploadTask
 
 
 
