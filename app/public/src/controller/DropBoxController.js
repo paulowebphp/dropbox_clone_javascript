@@ -451,6 +451,8 @@ class DropBoxController
 
         `;
 
+        this.initEventsLi(li);
+
         return li;
 
 
@@ -482,6 +484,22 @@ class DropBoxController
         });//end getFirebaseRef().on()
 
     }//END readFiles
+
+
+
+
+
+    initEventsLi( li )
+    {
+
+        li.addEventListener( 'click', e=>
+        {
+
+            li.classList.toggle('selected');
+
+        });//end li.addEventListener
+
+    }//END initEventsLi
 
 
 
