@@ -16,9 +16,13 @@ class DropBoxController
 
         this.timeleftEl = this.snackModalEl.querySelector('.timeleft');
 
+        this.listFilesEl = document.querySelector('#list-of-files-and-directories');
+
         this.connectFirebase();
 
         this.initEvents();
+
+        this.readFiles();
 
     }//END constructor
 
@@ -324,23 +328,38 @@ class DropBoxController
         
             case 'application/pdf':
                 return `
-                    <svg width="160" height="160" viewBox="0 0 160 160" class="mc-icon-template-content tile__preview tile__preview--icon">
-                        <title>content-audio-large</title>
-                        <defs>
-                            <rect id="mc-content-audio-large-b" x="30" y="43" width="100" height="74" rx="4"></rect>
-                            <filter x="-.5%" y="-.7%" width="101%" height="102.7%" filterUnits="objectBoundingBox" id="mc-content-audio-large-a">
-                                <feOffset dy="1" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
-                                <feColorMatrix values="0 0 0 0 0.858823529 0 0 0 0 0.870588235 0 0 0 0 0.88627451 0 0 0 1 0" in="shadowOffsetOuter1"></feColorMatrix>
-                            </filter>
-                        </defs>
-                        <g fill="none" fill-rule="evenodd">
-                            <g>
-                                <use fill="#000" filter="url(#mc-content-audio-large-a)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#mc-content-audio-large-b"></use>
-                                <use fill="#F7F9FA" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#mc-content-audio-large-b"></use>
-                            </g>
-                            <path d="M67 60c0-1.657 1.347-3 3-3 1.657 0 3 1.352 3 3v40c0 1.657-1.347 3-3 3-1.657 0-3-1.352-3-3V60zM57 78c0-1.657 1.347-3 3-3 1.657 0 3 1.349 3 3v4c0 1.657-1.347 3-3 3-1.657 0-3-1.349-3-3v-4zm40 0c0-1.657 1.347-3 3-3 1.657 0 3 1.349 3 3v4c0 1.657-1.347 3-3 3-1.657 0-3-1.349-3-3v-4zm-20-5.006A3 3 0 0 1 80 70c1.657 0 3 1.343 3 2.994v14.012A3 3 0 0 1 80 90c-1.657 0-3-1.343-3-2.994V72.994zM87 68c0-1.657 1.347-3 3-3 1.657 0 3 1.347 3 3v24c0 1.657-1.347 3-3 3-1.657 0-3-1.347-3-3V68z" fill="#637282"></path>
+                <svg version="1.1" id="Camada_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="160px" height="160px" viewBox="0 0 160 160" enable-background="new 0 0 160 160" xml:space="preserve">
+                <filter height="102%" width="101.4%" id="mc-content-unknown-large-a" filterUnits="objectBoundingBox" y="-.5%" x="-.7%">
+                    <feOffset result="shadowOffsetOuter1" in="SourceAlpha" dy="1"></feOffset>
+                    <feColorMatrix values="0 0 0 0 0.858823529 0 0 0 0 0.870588235 0 0 0 0 0.88627451 0 0 0 1 0" in="shadowOffsetOuter1">
+                    </feColorMatrix>
+                </filter>
+                <title>PDF</title>
+                <g>
+                    <g>
+                        <g filter="url(#mc-content-unknown-large-a)">
+                            <path id="mc-content-unknown-large-b_2_" d="M47,30h66c2.209,0,4,1.791,4,4v92c0,2.209-1.791,4-4,4H47c-2.209,0-4-1.791-4-4V34
+                                    C43,31.791,44.791,30,47,30z"></path>
                         </g>
-                    </svg>
+                        <g>
+                            <path id="mc-content-unknown-large-b_1_" fill="#F7F9FA" d="M47,30h66c2.209,0,4,1.791,4,4v92c0,2.209-1.791,4-4,4H47
+                                    c-2.209,0-4-1.791-4-4V34C43,31.791,44.791,30,47,30z"></path>
+                        </g>
+                    </g>
+                </g>
+                <path fill-rule="evenodd" clip-rule="evenodd" fill="#F15124" d="M102.482,91.479c-0.733-3.055-3.12-4.025-5.954-4.437
+                        c-2.08-0.302-4.735,1.019-6.154-0.883c-2.167-2.905-4.015-6.144-5.428-9.482c-1.017-2.402,1.516-4.188,2.394-6.263
+                        c1.943-4.595,0.738-7.984-3.519-9.021c-2.597-0.632-5.045-0.13-6.849,1.918c-2.266,2.574-1.215,5.258,0.095,7.878
+                        c3.563,7.127-1.046,15.324-8.885,15.826c-3.794,0.243-6.93,1.297-7.183,5.84c0.494,3.255,1.988,5.797,5.14,6.825
+                        c3.062,1,4.941-0.976,6.664-3.186c1.391-1.782,1.572-4.905,4.104-5.291c3.25-0.497,6.677-0.464,9.942-0.025
+                        c2.361,0.318,2.556,3.209,3.774,4.9c2.97,4.122,6.014,5.029,9.126,2.415C101.895,96.694,103.179,94.38,102.482,91.479z
+                        M67.667,94.885c-1.16-0.312-1.621-0.97-1.607-1.861c0.018-1.199,1.032-1.121,1.805-1.132c0.557-0.008,1.486-0.198,1.4,0.827
+                        C69.173,93.804,68.363,94.401,67.667,94.885z M82.146,65.949c1.331,0.02,1.774,0.715,1.234,1.944
+                        c-0.319,0.725-0.457,1.663-1.577,1.651c-1.03-0.498-1.314-1.528-1.409-2.456C80.276,65.923,81.341,65.938,82.146,65.949z
+                        M81.955,86.183c-0.912,0.01-2.209,0.098-1.733-1.421c0.264-0.841,0.955-2.04,1.622-2.162c1.411-0.259,1.409,1.421,2.049,2.186
+                        C84.057,86.456,82.837,86.174,81.955,86.183z M96.229,94.8c-1.14-0.082-1.692-1.111-1.785-2.033
+                        c-0.131-1.296,1.072-0.867,1.753-0.876c0.796-0.011,1.668,0.118,1.588,1.293C97.394,93.857,97.226,94.871,96.229,94.8z"></path>
+            </svg>
                 `;
                 break;
         
@@ -419,18 +438,50 @@ class DropBoxController
 
 
 
-    getFileView( file )
+    getFileView( file, key )
     {
-        return `
-            <li>
-                ${this.getFileIconView(file)}
-                <div class="name text-center">${file.name}</div>
-            </li>
+        let li = document.createElement('li');
+
+        li.dataset.key = key;
+
+        li.innerHTML = `
+
+            ${this.getFileIconView(file)}
+            <div class="name text-center">${file.name}</div>
+
         `;
+
+        return li;
 
 
 
     }//end getFileView
+
+
+
+
+
+    readFiles()
+    {
+
+        this.getFirebaseRef().on('value', snapshot =>
+        {
+            this.listFilesEl.innerHTML = '';
+
+            snapshot.forEach(snapshotItem =>
+            {
+
+                let key = snapshotItem.key;
+
+                let data = snapshotItem.val();
+
+                this.listFilesEl.appendChild(this.getFileView(data, key));
+
+            });//end snapshot.forEach
+
+        });//end getFirebaseRef().on()
+
+    }//END readFiles
 
 
 
