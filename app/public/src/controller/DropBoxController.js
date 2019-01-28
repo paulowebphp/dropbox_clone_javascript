@@ -16,10 +16,30 @@ class DropBoxController
 
         this.timeleftEl = this.snackModalEl.querySelector('.timeleft');
 
+        this.connectFirebase();
+
         this.initEvents();
 
     }//END constructor
 
+
+
+
+    connectFirebase()
+    {
+        var config = 
+        {
+            apiKey: "AIzaSyCK5INA8xDtCDoZT-UnyQrE_MXolLtxONU",
+            authDomain: "dropbox-clone-javascript.firebaseapp.com",
+            databaseURL: "https://dropbox-clone-javascript.firebaseio.com",
+            projectId: "dropbox-clone-javascript",
+            storageBucket: "dropbox-clone-javascript.appspot.com",
+            messagingSenderId: "591766692113"
+        };
+
+        firebase.initializeApp(config);
+        
+    }//END connectFirebase
 
 
 
