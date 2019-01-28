@@ -27,14 +27,15 @@ class DropBoxController
 
     connectFirebase()
     {
+        // Initialize Firebase
         var config = 
         {
-            apiKey: "AIzaSyCK5INA8xDtCDoZT-UnyQrE_MXolLtxONU",
-            authDomain: "dropbox-clone-javascript.firebaseapp.com",
-            databaseURL: "https://dropbox-clone-javascript.firebaseio.com",
-            projectId: "dropbox-clone-javascript",
-            storageBucket: "dropbox-clone-javascript.appspot.com",
-            messagingSenderId: "591766692113"
+            apiKey: "AIzaSyCp-V_yEy_EKXCWRoKFtWGy7X4CWUkABXo",
+            authDomain: "dropbox-clone-68938.firebaseapp.com",
+            databaseURL: "https://dropbox-clone-68938.firebaseio.com",
+            projectId: "dropbox-clone-68938",
+            storageBucket: "dropbox-clone-68938.appspot.com",
+            messagingSenderId: "425092258290"
         };
 
         firebase.initializeApp(config);
@@ -58,17 +59,62 @@ class DropBoxController
         this.inputFilesEl.addEventListener('change', event =>
         {
 
-            this.uploadTask(event.target.files);
+            this.btnSendFileEl.disabled = true;            
+
+            this.uploadTask(event.target.files).then( responses => 
+            {
+
+                responses.forEach( resp =>
+                {
+
+                    this.getFirebaseRef().push().set(resp.files['input-file']);
+
+                });//end forEach
+
+                this.uploadComplete();
+
+            }).catch( err =>
+            {
+
+                this.uploadComplete();
+                console.log(err);
+
+            });//end uploadTask().then().catch()
 
             this.modalShow();
 
-            this.inputFilesEl.value = '';
+            
 
         });//end inputFilesEl.addEventListener
         
 
     }//END initEvents
 
+
+
+
+
+    uploadComplete()
+    {
+
+        this.modalShow(false);
+
+        this.inputFilesEl.value = '';
+
+        this.btnSendFileEl.disabled = false; 
+
+    }//END uploadComplete
+    
+
+
+
+
+    getFirebaseRef()
+    {
+
+        return firebase.database().ref('files');
+
+    }//END getFirebaseRef
 
 
 
@@ -102,8 +148,6 @@ class DropBoxController
 
                 ajax.onload = event =>
                 {
-                    this.modalShow(false);
-
                     try
                     {
                         resolve(JSON.parse(ajax.responseText));
@@ -119,7 +163,6 @@ class DropBoxController
 
                 ajax.onerror = event =>
                 {
-                    this.modalShow(false);
 
                     reject(event);
 
