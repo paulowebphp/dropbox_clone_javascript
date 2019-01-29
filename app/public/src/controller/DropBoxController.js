@@ -3,6 +3,7 @@ class DropBoxController
 
     constructor()
     {
+        this.onselectionchange = new Event('selectionchange');
 
         this.btnSendFileEl = document.querySelector('#btn-send-file');
 
@@ -17,6 +18,13 @@ class DropBoxController
         this.timeleftEl = this.snackModalEl.querySelector('.timeleft');
 
         this.listFilesEl = document.querySelector('#list-of-files-and-directories');
+
+        this.btnNewFolder = document.querySelector('#btn-new-folder');
+
+        this.btnRename = document.querySelector('#btn-rename');
+
+        this.btnDelete = document.querySelector('#btn-delete');
+
 
         this.connectFirebase();
 
@@ -49,15 +57,70 @@ class DropBoxController
 
 
 
+    getSelection()
+    {
+
+        return this.listFilesEl.querySelectorAll('.selected');
+        
+    }//END getSelection
+
+
+
+
+
     initEvents()
     {
+
+        this.btnRename.addEventListener('click', e =>
+        {
+
+            let li = this.getSelection()[0];
+
+            let file = JSON.parse(li.dataset.file);
+
+            let name = prompt("Digite o novo nome: ", file.name);
+
+            if( name )
+            {
+
+                file.name = name;
+
+                this.getFirebaseRef().child(li.dataset.key).set(file);
+
+            }//end if
+
+        });//end addEventListener
+
+        this.listFilesEl.addEventListener('selectionchange', e =>
+        {
+
+            switch( this.getSelection().length )
+            {
+                case 0:
+                    this.btnRename.style.display = 'none';
+                    this.btnDelete.style.display = 'none';
+                    break;
+            
+                case 1:
+                    this.btnRename.style.display = 'block';
+                    this.btnDelete.style.display = 'block';
+                    break;
+            
+                default:
+                    this.btnDelete.style.display = 'block';
+                    this.btnRename.style.display = 'none';
+                    break;
+
+            }//end switch
+
+        });//end addEventListener
 
         this.btnSendFileEl.addEventListener('click', event =>
         {
 
             this.inputFilesEl.click();
 
-        });//end btnSendFileEl.addEventListener
+        });//end addEventListener
 
 
         this.inputFilesEl.addEventListener('change', event =>
@@ -83,13 +146,12 @@ class DropBoxController
                 this.uploadComplete();
                 console.log(err);
 
-            });//end uploadTask().then().catch()
+            });//end uploadTask
 
             this.modalShow();
 
-            
+        });//end addEventListener
 
-        });//end inputFilesEl.addEventListener
         
 
     }//END initEvents
@@ -443,6 +505,7 @@ class DropBoxController
         let li = document.createElement('li');
 
         li.dataset.key = key;
+        li.dataset.file = JSON.stringify(file);
 
         li.innerHTML = `
 
@@ -536,12 +599,13 @@ class DropBoxController
 
                     });//end lis.forEach
 
+                    this.listFilesEl.dispatchEvent(this.onselectionchange);
+
                     return true;
 
                 }//end if
 
             }//end if
-
 
             if( !e.ctrlKey )
             {
@@ -557,7 +621,11 @@ class DropBoxController
 
             li.classList.toggle('selected');
 
+            this.listFilesEl.dispatchEvent(this.onselectionchange);
+
         });//end li.addEventListener
+
+
 
     }//END initEventsLi
 
