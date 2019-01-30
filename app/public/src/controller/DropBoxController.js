@@ -231,11 +231,22 @@ class DropBoxController
             this.uploadTask(event.target.files).then( responses => 
             {
 
-                responses.forEach( resp =>
-                {
+                responses.forEach( resp => 
+                { 
+                    resp.ref.getDownloadURL().then( data=>
+                    {
+                        this.getFirebaseRef().push().set(
+                        { 
+                            name: resp.name, 
+                            type: resp.contentType, 
+                            path: data, 
+                            size: resp.size 
+                        
+                        });//end getFirebaseRef
 
-                    this.getFirebaseRef().push().set(resp.files['input-file']);
-
+                    });//end getDownloadURL
+                
+            
                 });//end forEach
 
                 this.uploadComplete();
@@ -362,38 +373,60 @@ class DropBoxController
         [...files].forEach( file =>
         {
 
-            let formData = new FormData();
+            promises.push( new Promise( (resolve,reject) =>
+            {
 
-            formData.append('input-file',file);
+                let fileRef = firebase.storage().ref(this.currentFolder.join('/')).child(file.name);
 
-            promises.push(
-
-                this.ajax(
-
-                    /** url */
-                    '/upload',
+                let task = fileRef.put(file);
     
-                    /** method */
-                    'POST',
+                task.on(
     
-                    /** formData */
-                    formData,
+                    /** Parametro */
+                    'state_changed',
+                    
+                    /** Progress */
+                    snapshot =>
+                    {
+                        this.uploadProgress({
+
+                            loaded: snapshot.bytesTransferred,
+                            total: snapshot.totalBytes
+
+                        }, file);
     
-                    /** onprogress */
+                    }, 
+    
+                    /** Error */
+                    error =>
+                    {
+    
+                        console.error(error);
+                        reject(error);
+    
+                    }, 
+    
+                    /** Resolve */
                     () =>
                     {
-                        this.uploadProgress(event, file);
-                    },
+
+                        fileRef.getMetadata().then( metadata =>
+                        {
+
+                            resolve(metadata);
+
+                        }).catch( err =>
+                        {
+
+                            reject(err);
+
+                        });//end getMetadata
     
-                    /** onloadstart */
-                    () =>
-                    {
-                        this.startUploadTime = Date.now();
                     }
-    
-                )//end ajax
 
-            );//end push
+                );//end on
+
+            }));//end push
 
         });//end forEach
 
