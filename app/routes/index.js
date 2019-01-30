@@ -28,6 +28,57 @@ router.get('/', function(req, res, next)
 
 
 
+router.get('/file', (req,res) =>
+{
+
+  let path = './' + req.query.path;
+
+  if( fs.existsSync(path) )
+  {
+
+    fs.readFile(path, (err,data) =>
+    {
+
+      if( err )
+      {
+
+        console.error(err);
+        
+        res.status(400).json({
+
+          error: err
+
+        });
+
+      }//end if
+      else
+      {
+        
+        res.status(200).end(data);
+
+      }//end else
+
+    });//end readFile
+
+  }//end if
+  else
+  {
+
+    res.status(404).json({
+
+      error: 'Arquivo não encontrado'
+
+    });//end status
+
+  }//end else
+
+
+
+});//END route
+
+
+
+
 
 router.delete('/file', (req,res) =>
 {
@@ -75,6 +126,16 @@ router.delete('/file', (req,res) =>
       });//end unlink
 
     }//end if
+    else
+    {
+
+      res.status(404).json({
+
+        error: 'Arquivo não encontrado'
+
+      });//end status
+
+    }//end else
 
   });//end parse
 
